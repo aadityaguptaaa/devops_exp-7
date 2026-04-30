@@ -33,7 +33,8 @@ pipeline {
             steps {
                 echo '🐳 Building Docker image...'
                 script {
-                    dockerImage = docker.build("${DOCKER_IMAGE}:${DOCKER_TAG}")
+                    dockerImage = docker.build("${DOCKER_IMAGE}:latest")
+                    docker.build("${DOCKER_IMAGE}:build-${env.BUILD_NUMBER}")
                 }
             }
         }
@@ -51,13 +52,14 @@ pipeline {
         }
 
         stage('Deploy to Kubernetes') {
-    steps {
-        echo '☸️ Deploying to Kubernetes...'
-        sh 'kubectl --kubeconfig=/var/jenkins_home/kubeconfig apply -f k8s/deployment.yaml'
-        sh 'kubectl --kubeconfig=/var/jenkins_home/kubeconfig apply -f k8s/service.yaml'
-        sh 'kubectl --kubeconfig=/var/jenkins_home/kubeconfig rollout status deployment/myapp-deployment --timeout=60s'
-    }
-}
+            steps {
+                echo '☸️ Deploying to Kubernetes...'
+                sh 'kubectl --kubeconfig=/var/jenkins_home/kubeconfig apply -f k8s/deployment.yaml'
+                sh 'kubectl --kubeconfig=/var/jenkins_home/kubeconfig apply -f k8s/service.yaml'
+                sh "kubectl --kubeconfig=/var/jenkins_home/kubeconfig set image deployment/myapp-deployment myapp=${DOCKER_IMAGE}:build-${env.BUILD_NUMBER}"
+                sh 'kubectl --kubeconfig=/var/jenkins_home/kubeconfig rollout status deployment/myapp-deployment --timeout=60s'
+            }
+        }
 
         stage('Verify Deployment') {
             steps {
