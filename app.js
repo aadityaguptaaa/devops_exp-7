@@ -6,9 +6,10 @@ app.get('/', (req, res) => {
     <html>
       <head><title>Jenkins + K8s App</title></head>
       <body style="font-family:Arial; text-align:center; margin-top:100px;">
-        <h1>🚀 Hello from Jenkins + Kubernetes!</h1>
+        <h1>🚀 Hello  from Jenkins + Kubernetes!</h1>
         <p>CI/CD Pipeline is working successfully.</p>
         <p>Deployed via Jenkins → Docker → Kubernetes</p>
+        this is practically tested and working fine 
       </body>
     </html>
   `);
