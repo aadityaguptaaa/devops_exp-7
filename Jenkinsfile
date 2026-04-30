@@ -51,23 +51,19 @@ pipeline {
         }
 
         stage('Deploy to Kubernetes') {
-            steps {
-                echo '☸️ Deploying to Kubernetes...'
-                withKubeConfig([credentialsId: 'kubeconfig']) {
-                    sh 'kubectl apply -f k8s/deployment.yaml'
-                    sh 'kubectl apply -f k8s/service.yaml'
-                    sh 'kubectl rollout status deployment/myapp-deployment --timeout=60s'
-                }
-            }
-        }
+    steps {
+        echo '☸️ Deploying to Kubernetes...'
+        sh 'kubectl --kubeconfig=/var/jenkins_home/kubeconfig apply -f k8s/deployment.yaml'
+        sh 'kubectl --kubeconfig=/var/jenkins_home/kubeconfig apply -f k8s/service.yaml'
+        sh 'kubectl --kubeconfig=/var/jenkins_home/kubeconfig rollout status deployment/myapp-deployment --timeout=60s'
+    }
+}
 
         stage('Verify Deployment') {
             steps {
                 echo '✅ Verifying deployment...'
-                withKubeConfig([credentialsId: 'kubeconfig']) {
-                    sh 'kubectl get pods -l app=myapp'
-                    sh 'kubectl get svc myapp-service'
-                }
+                sh 'kubectl --kubeconfig=/var/jenkins_home/kubeconfig get pods -l app=myapp'
+                sh 'kubectl --kubeconfig=/var/jenkins_home/kubeconfig get svc myapp-service'
             }
         }
     }
