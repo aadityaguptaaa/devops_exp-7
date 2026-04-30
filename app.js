@@ -9,7 +9,7 @@ app.get('/', (req, res) => {
         <h1>🚀 Hello  from Jenkins + Kubernetes!</h1>
         <p>CI/CD Pipeline is working successfully.</p>
         <p>Deployed via Jenkins → Docker → Kubernetes</p>
-        this is practically tested and working fine 
+       <h1> this is practically tested and working fine </h1>
       </body>
     </html>
   `);
